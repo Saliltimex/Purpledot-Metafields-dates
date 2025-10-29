@@ -38,10 +38,14 @@ app.post("/webhook/product-updated", async (req, res) => {
       }
     );
 
+    console.log(existingMetafieldsResponse ,existingMetafieldsResponse.data.metafields , existingMetafieldsResponse.data )
+
     const existingMetafields = existingMetafieldsResponse.data.metafields || [];
     const existingField = existingMetafields.find(
       (m) => m.namespace === "custom" && m.key === "expected_delivery_date"
     );
+
+    console.log(existingField , existingField.value , "existingField")
 
     // 3️⃣ Only create metafield if it doesn’t exist or value is empty
     if (existingField && existingField.value) {
