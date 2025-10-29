@@ -29,7 +29,7 @@ app.post("/webhook/product-updated", async (req, res) => {
 
       // 2️⃣ Fetch existing metafields safely
     const existingMetafieldsResponse = await axios.get(
-      `https://${shopDomain}/admin/api/2025-01/products/${productId}/metafields.json`,
+      `https://${shopDomain}/admin/api/2025-01/products/${productId}/metafields.json?namespace=custom&key=expected_delivery_date`,
       {
         headers: {
           "X-Shopify-Access-Token": SHOPIFY_ACCESS_TOKEN,
