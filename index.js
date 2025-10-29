@@ -13,10 +13,11 @@ const PURPLE_DOT_API_URL = `${process.env.PURPLE_DOT_API_URL}?api_key=${process.
 // --- Webhook route ---
 app.post("/webhook/product-updated", async (req, res) => {
   try {
+    const shopDomain = req.get("X-Shopify-Shop-Domain");
     const product = req.body;
     const { id: productId, handle, title } = product;
 
-    console.log(`Received product update for: ${title} ${handle} ${productId} ${req.body} `);
+    console.log(`Received product update for: ${title} ${handle} ${productId} ${shopDomain} `);
 
     // 1️⃣ Fetch preorder details from Purple Dot API (public)
     const purpleDotResponse = await axios.get(
