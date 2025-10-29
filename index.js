@@ -9,7 +9,7 @@ const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
 const PURPLE_DOT_API_URL = `${process.env.PURPLE_DOT_API_URL}?api_key=${process.env.PURPLE_DOT_API_KEY}`;
 
 // --- Webhook route ---
-app.post("/webhook/product-update", async (req, res) => {
+app.post("/webhook/product-updated", async (req, res) => {
   try {
     const shopDomain = req.get("X-Shopify-Shop-Domain");
     const product = req.body;
@@ -37,8 +37,6 @@ app.post("/webhook/product-update", async (req, res) => {
         },
       }
     );
-
-    console.log(existingMetafieldsResponse ,existingMetafieldsResponse.data.metafields , existingMetafieldsResponse.data )
 
     const existingMetafields = existingMetafieldsResponse.data.metafields || [];
     const existingField = existingMetafields.find(
