@@ -23,7 +23,7 @@ app.post("/webhook/product-updated", async (req, res) => {
       `${PURPLE_DOT_API_URL}&handle=${handle}`
     );
 
-    const preorderData = purpleDotResponse.data?.[0]?.waitlist;
+    const preorderData = purpleDotResponse.data?.data?.waitlist;
     const deliveryDate = preorderData?.display_dispatch_date || null;
 
     console.log(preorderData , purpleDotResponse.data?.[0] ,purpleDotResponse.data )
