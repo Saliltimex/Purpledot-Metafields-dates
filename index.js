@@ -16,7 +16,7 @@ app.post("/webhook/product-updated", async (req, res) => {
     const product = req.body;
     const { id: productId, handle, title } = product;
 
-    console.log(`Received product update for: ${title}`);
+    console.log(`Received product update for: ${title} ${handle} ${productId}`);
 
     // 1️⃣ Fetch preorder details from Purple Dot API (public)
     const purpleDotResponse = await axios.get(
