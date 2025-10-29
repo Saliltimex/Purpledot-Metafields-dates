@@ -16,19 +16,17 @@ app.post("/webhook/product-updated", async (req, res) => {
     const product = req.body;
     const { id: productId, handle, title } = product;
 
-    console.log(`Received product update for: ${title} ${handle} ${productId} ,  ${PURPLE_DOT_API_URL}&handle=${handle}`);
+    console.log(`Received product update for: ${title} ${handle} ${productId} `);
 
     // 1️⃣ Fetch preorder details from Purple Dot API (public)
     const purpleDotResponse = await axios.get(
       `${PURPLE_DOT_API_URL}&handle=${handle}`
     );
 
-    
-
-    const preorderData = purpleDotResponse.data?.waitlist;
+    const preorderData = purpleDotResponse.data?.[0]?.waitlist;
     const deliveryDate = preorderData?.display_dispatch_date || null;
 
-    console.log(preorderData , deliveryDate)
+    console.log(preorderData)
 
     if (!deliveryDate) {
       console.log("No preorder info found, skipping metafield update.");
