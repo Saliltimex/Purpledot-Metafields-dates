@@ -27,7 +27,7 @@ app.post("/webhook/product-updated", async (req, res) => {
       return res.status(200).send("No preorder data found");
     }
 
-    // 2️⃣ Fetch existing metafields for the product
+      // 2️⃣ Fetch existing metafields safely
     const existingMetafieldsResponse = await axios.get(
       `https://${shopDomain}/admin/api/2025-01/products/${productId}/metafields.json`,
       {
@@ -38,15 +38,16 @@ app.post("/webhook/product-updated", async (req, res) => {
       }
     );
 
-    const existingMetafields = existingMetafieldsResponse.data.metafields || [];
+    const existingMetafields = existingMetafieldsResponse?.data?.metafields || [];
+
     const existingField = existingMetafields.find(
       (m) => m.namespace === "custom" && m.key === "expected_delivery_date"
     );
 
-    console.log(existingField , existingField.value , "existingField")
+    console.log(existingField , "existingField")
 
-    // 3️⃣ Only create metafield if it doesn’t exist or value is empty
-    if (existingField && existingField.value) {
+    // 3️⃣ Only create metafield if it doesn’t exist or has empty value
+    if (existingField && existingField.value && existingField.value.trim() !== "") {
       console.log(`✅ Metafield already exists for product ${productId}, skipping update.`);
       return res.status(200).send("Metafield already exists, no update needed.");
     }
