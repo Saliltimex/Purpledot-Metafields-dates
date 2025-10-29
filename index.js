@@ -7,24 +7,23 @@ app.use(express.json());
 // Shopify and Purple Dot credentials (use environment variables in production)
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE; // e.g. myshop.myshopify.com
 const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
-const PURPLE_DOT_API_URL = "https://api.purpledotprice.com/v1/preorders"; // example URL
-const PURPLE_DOT_API_KEY = process.env.PURPLE_DOT_API_KEY;
+const PURPLE_DOT_API_URL = `${process.env.PURPLE_DOT_API_URL}?api_key=${process.env.PURPLE_DOT_API_KEY}`; // example URL
+
 
 // --- Webhook route ---
 app.post("/webhook/product-updated", async (req, res) => {
   try {
     const product = req.body;
-    console.log(`Received product update for: ${product.title}`);
+    const { id: productId, handle, title } = product;
 
-    const productId = product.id;
-    const sku = product.variants?.[0]?.sku;
+    console.log(`Received product update for: ${title}`);
 
-    // 1️⃣ Fetch preorder details from Purple Dot API
-    const purpleDotResponse = await axios.get(`${PURPLE_DOT_API_URL}?sku=${sku}`, {
-      headers: { Authorization: `Bearer ${PURPLE_DOT_API_KEY}` },
-    });
+    // 1️⃣ Fetch preorder details from Purple Dot API (public)
+    const purpleDotResponse = await axios.get(
+      `${PURPLE_DOT_API_URL}&handle=${handle}`
+    );
 
-    const preorderData = purpleDotResponse.data?.[0]; // Adjust based on response shape
+    const preorderData = purpleDotResponse.data?.[0];
     const deliveryDate = preorderData?.deliveryDate || null;
 
     if (!deliveryDate) {
@@ -53,14 +52,14 @@ app.post("/webhook/product-updated", async (req, res) => {
       }
     );
 
-    console.log(`✅ Metafield updated for product ${productId}`);
+    console.log(`Metafield updated for product ${productId}`);
     res.status(200).send("Metafield updated successfully");
   } catch (error) {
-    console.error("❌ Error processing webhook:", error.message);
+    console.error("Error processing webhook:", error.message);
     res.status(500).send("Error updating metafield");
   }
 });
 
 // --- Start the server ---
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
