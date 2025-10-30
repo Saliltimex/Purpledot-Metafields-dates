@@ -22,6 +22,8 @@ app.post("/webhook/product-updated", async (req, res) => {
     const preorderData = purpleDotResponse.data?.data?.waitlist;
     const deliveryDate = preorderData?.display_dispatch_date || null;
 
+    console.log(preorderData , "preorderData")
+
     if (!deliveryDate) {
       console.log("ℹ️ No preorder info found, skipping metafield update.");
       return res.status(200).send("No preorder data found");
