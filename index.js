@@ -20,7 +20,24 @@ app.post("/webhook/product-updated", async (req, res) => {
     // 1️⃣ Fetch preorder details from Purple Dot API (public)
     const purpleDotResponse = await axios.get(`${PURPLE_DOT_API_URL}&handle=${handle}`);
     const preorderData = purpleDotResponse.data?.data?.waitlist;
-    const deliveryDate = preorderData?.display_dispatch_date || null;
+    const utcDate = preorderData?.shipping_dates?.latest || null;
+
+let deliveryDate = null;
+
+if (utcDate) {
+  deliveryDate = new Date(utcDate).toLocaleString("en-US", {
+  timeZone: "America/New_York",
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true,
+});
+
+}
+
+
 
     console.log(preorderData , "preorderData")
 
